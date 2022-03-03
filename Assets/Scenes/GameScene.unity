@@ -569,7 +569,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 2
+  orthographic size: 3
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1343,11 +1343,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firePoint: {fileID: 880128882}
   bulletPrefab: {fileID: 5096540782210806754, guid: bbe4f547611fd5b42a207b8a44958e65, type: 3}
-  bulletForce: 2
-  dispersion: 15
-  timeBetweenBullets: 0.15
-  numberOfBullets: 10
-  timeBetweenShots: 1.2
+  bulletForce: 15
+  dispersion: 4
+  timeBetweenBullets: 0.12
+  numberOfBullets: 7
+  timeBetweenShots: 3
 --- !u!1 &2135278642
 GameObject:
   m_ObjectHideFlags: 0
