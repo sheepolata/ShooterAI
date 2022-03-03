@@ -1203,6 +1203,7 @@ GameObject:
   - component: {fileID: 1986204689}
   - component: {fileID: 1986204694}
   - component: {fileID: 1986204693}
+  - component: {fileID: 1986204695}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1222,10 +1223,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82eac4800ecf9c9479d02e9e11a6c19b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MOVEMENT: '##################'
   moveSpeed: 3
   rb: {fileID: 1986204690}
-  cam: {fileID: 519420031}
 --- !u!50 &1986204690
 Rigidbody2D:
   serializedVersion: 4
@@ -1348,6 +1347,19 @@ MonoBehaviour:
   timeBetweenBullets: 0.12
   numberOfBullets: 7
   timeBetweenShots: 3
+--- !u!114 &1986204695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1986204688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9118d2947c5daa46ad014ee66f5cb51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 519420031}
 --- !u!1 &2135278642
 GameObject:
   m_ObjectHideFlags: 0
