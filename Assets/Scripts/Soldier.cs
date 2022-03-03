@@ -24,7 +24,6 @@ public class Soldier : MonoBehaviour
 
         Vector2 lookDir = mousepos - getPosition();
         float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-        if(angle < 0){angle += 360;}
         
         rb.rotation = angle;
     }
