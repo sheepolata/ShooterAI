@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Bullet
   layers:
   - Default
   - TransparentFX
@@ -11,7 +12,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Bullet
   - 
   - 
   - 
@@ -44,6 +45,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: VFX_Low
+    uniqueID: 2969398813
+    locked: 0
   - name: GameObjects
     uniqueID: 3747835161
+    locked: 0
+  - name: VFX_High
+    uniqueID: 4022560007
+    locked: 0
+  - name: UI
+    uniqueID: 1489805383
     locked: 0

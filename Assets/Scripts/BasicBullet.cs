@@ -12,7 +12,8 @@ public class BasicBullet : MonoBehaviour
     }
     
     void OnCollisionEnter2D(Collision2D collision){
-        if(collision.collider.gameObject != creator){
+        if(collision.collider.gameObject != creator && collision.collider.gameObject.tag != "Bullet"){
+            Debug.Log(collision.collider.gameObject.tag);
             Destroy(gameObject);
         }
     }
