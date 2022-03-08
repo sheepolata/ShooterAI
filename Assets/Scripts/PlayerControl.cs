@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,12 +10,30 @@ public class PlayerControl : MonoBehaviour
     Vector2 movement;
     Vector2 mousepos;
 
+    bool hasSoldierScript = false;
+    bool hasShootScript = false;
+
+    void Start(){
+        hasSoldierScript = GetComponent<Soldier>() != null;
+        hasShootScript = GetComponent<Shoot>() != null;
+    }
+
     // Update is called once per frame
     void Update()
     {
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
         mousepos = cam.ScreenToWorldPoint(Input.mousePosition);
+
+        if (hasSoldierScript) {
+            GetComponent<Soldier>().IsMoving = !(movement.x == 0 && movement.y == 0);
+        }
+
+        if(Input.GetKeyDown("r")){
+            if (hasShootScript) {
+                GetComponent<Shoot>().Reload();
+            }
+        }
     }
 
     void FixedUpdate() {

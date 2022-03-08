@@ -10,6 +10,7 @@ public class Shoot : MonoBehaviour
     public GameObject nozzleflashVFX;
     public GameObject rayVFX;
     public float bulletForce = 20f;
+    public float bulletDamage = 1f;
     public float dispersion = 5f;
 
     public float timeBetweenBullets = 0.05f;
@@ -78,6 +79,11 @@ public class Shoot : MonoBehaviour
         }
     }
 
+    public void Reload(){
+        canShootReload = false;
+        timerToReload = reloadTime;
+    }
+
     IEnumerator TakeShotRayCast(){
         int res = OneShotRayCast();
         if(res <= 0) {yield break;} 
@@ -91,10 +97,19 @@ public class Shoot : MonoBehaviour
 
     int OneShotRayCast() {
 
-        GameObject _nozzleflashVFX = Instantiate(nozzleflashVFX, firePoint.position, firePoint.rotation);
-        _nozzleflashVFX.transform.Rotate(0, 0, Random.Range(-dispersion, dispersion));
 
-        float _range = maxRange + Random.Range(-rangeDispersion, rangeDispersion);
+        if (currentClipSize <= 0){
+            // canShootReload = false;
+            // timerToReload = reloadTime;
+            return -1;
+        }
+
+        GameObject _nozzleflashVFX = Instantiate(nozzleflashVFX, firePoint.position, firePoint.rotation);
+        float _dispersion = dispersion * (GetComponent<Soldier>().IsMoving ? 1f : 0.25f);
+        _nozzleflashVFX.transform.Rotate(0, 0, Random.Range(-_dispersion, _dispersion));
+
+        float _range_dispersion = rangeDispersion * (GetComponent<Soldier>().IsMoving ? 1f : 0.25f);
+        float _range = maxRange + Random.Range(-_range_dispersion, 0);
         RaycastHit2D hit = Physics2D.Raycast(_nozzleflashVFX.transform.position, _nozzleflashVFX.transform.up, _range);
         Vector3 scale = new Vector3(0.02f,0.02f,0.02f);
         if (hit.collider != null){
@@ -113,11 +128,15 @@ public class Shoot : MonoBehaviour
 
         currentClipSize -= 1;
 
-        if (currentClipSize <= 0){
-            canShootReload = false;
-            timerToReload = reloadTime;
-            return -1;
+        if (hit.collider != null){
+            if (hit.collider.GetComponent<Target>() != null) {hit.collider.GetComponent<Target>().onShotTaken(bulletDamage);}
         }
+
+        // if (currentClipSize <= 0){
+        //     // canShootReload = false;
+        //     // timerToReload = reloadTime;
+        //     return -1;
+        // }
         return 1;
     }
 

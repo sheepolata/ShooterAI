@@ -7,6 +7,12 @@ public class Soldier : MonoBehaviour
 
     public float moveSpeed = 5;
     public Rigidbody2D rb;
+
+    public bool IsMoving{
+        get { return moving;}
+        set { moving = value;}
+    }
+    bool moving = false;
     
 
     // Update is called once per frame
