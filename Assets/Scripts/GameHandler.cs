@@ -12,6 +12,7 @@ public class GameHandler : MonoBehaviour
     float zoomFactor = 1.0f;
     float zoomSpeed = 5.0f;
     private float originalSize = 0f;
+    public float camOffset = 2f;
 
     // Start is called before the first frame update
     void Start() {
@@ -27,7 +28,7 @@ public class GameHandler : MonoBehaviour
         // Offset camera according to look direction
         if(offsetCamOnLookDir){
             Vector2 offset = new Vector2(Mathf.Cos((camTarget.GetComponent<Soldier>().getLookDir()+90f) * Mathf.Deg2Rad), Mathf.Sin((camTarget.GetComponent<Soldier>().getLookDir()+90f) * Mathf.Deg2Rad));
-            campos += offset * new Vector2(0.2f, 0.4f);
+            campos += offset * new Vector2(0.1f, 0.2f) * camOffset;
         }
         cam.transform.position =  new Vector3(campos.x, campos.y, -10);
 

@@ -13,6 +13,7 @@ public class AIController : MonoBehaviour
 
     Vector2 movement;
 
+    public GameObject targetManager;
     GameObject currentTarget;
 
     // Update is called once per frame
