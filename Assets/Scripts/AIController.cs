@@ -36,7 +36,7 @@ public class AIController : MonoBehaviour
     }
 
     void chooseNextWaypoint(){
-        if ( Vector3.Distance(transform.position, currentWaypoint.transform.position) < 0.5f ){
+        if ( Vector3.Distance(transform.position, currentWaypoint.transform.position) < 0.1f ){
             currentWaypoint = currentWaypoint.GetComponent<Waypoint>().NextWaypointRandom().gameObject;
         }
     }
