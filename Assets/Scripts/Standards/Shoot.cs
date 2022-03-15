@@ -96,11 +96,7 @@ public class Shoot : MonoBehaviour
 
 
     int OneShotRayCast() {
-
-
         if (currentClipSize <= 0){
-            // canShootReload = false;
-            // timerToReload = reloadTime;
             return -1;
         }
 
@@ -132,11 +128,6 @@ public class Shoot : MonoBehaviour
             if (hit.collider.GetComponent<Target>() != null) {hit.collider.GetComponent<Target>().onShotTaken(bulletDamage);}
         }
 
-        // if (currentClipSize <= 0){
-        //     // canShootReload = false;
-        //     // timerToReload = reloadTime;
-        //     return -1;
-        // }
         return 1;
     }
 

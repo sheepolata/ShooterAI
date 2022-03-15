@@ -10,23 +10,43 @@ public class TargetManager : MonoBehaviour
     public List<GameObject> TargetList {
         get {return targetList;}
     }
-    List<GameObject> targetList = new List<GameObject>();
+    public List<GameObject> targetList = new List<GameObject>();
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag == "Target"){
+        if(other.tag == "Target" && !targetList.Contains(other.gameObject)){
+            RaycastHit2D[] hits = Physics2D.RaycastAll(owner.transform.position, (other.gameObject.transform.position - owner.transform.position).normalized);
+            // targetList.Add(other.gameObject);
+            if(other.gameObject == hits[1].collider.gameObject) targetList.Add(other.gameObject);
         }
     }
 
     private void OnTriggerStay2D(Collider2D other)
     {
         if(other.tag == "Target"){
+            RaycastHit2D[] hits = Physics2D.RaycastAll(owner.transform.position, (other.gameObject.transform.position - owner.transform.position).normalized);
+
+            if(other.gameObject == hits[1].collider.gameObject && !targetList.Contains(other.gameObject)){ 
+                targetList.Add(other.gameObject); 
+            }
+            else if(targetList.Contains(other.gameObject)) { 
+                targetList.Remove(other.gameObject); 
+            }
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if(other.tag == "Target"){
+        if(other.tag == "Target" && targetList.Contains(other.gameObject)){
+            targetList.Remove(other.gameObject);
+        }
+    }
+
+    void OnDrawGizmos() {
+        foreach (GameObject go in targetList) {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(owner.transform.position, go.transform.position);
+            Gizmos.color = Color.white;
         }
     }
 }

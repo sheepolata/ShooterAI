@@ -2954,7 +2954,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4416028123070886612, guid: dcaf25d459e888f4f886f08c33da727a, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4416028123070886612, guid: dcaf25d459e888f4f886f08c33da727a, type: 3}
       propertyPath: firstWaypoint
@@ -3022,7 +3022,7 @@ PrefabInstance:
       objectReference: {fileID: 519420031}
     - target: {fileID: 5425864383860657778, guid: dcaf25d459e888f4f886f08c33da727a, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5425864383860657779, guid: dcaf25d459e888f4f886f08c33da727a, type: 3}
       propertyPath: rayVFX
@@ -3035,6 +3035,10 @@ PrefabInstance:
     - target: {fileID: 5425864383860657779, guid: dcaf25d459e888f4f886f08c33da727a, type: 3}
       propertyPath: dispersion
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5425864383860657780, guid: dcaf25d459e888f4f886f08c33da727a, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5425864383860657781, guid: dcaf25d459e888f4f886f08c33da727a, type: 3}
       propertyPath: m_Name
