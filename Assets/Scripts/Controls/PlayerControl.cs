@@ -27,6 +27,8 @@ public class PlayerControl : MonoBehaviour
 
         if (hasSoldierScript) {
             GetComponent<Soldier>().IsMoving = !(movement.x == 0 && movement.y == 0);
+            if(GetComponent<Soldier>().IsMoving) GetComponent<Soldier>().MoveSpeedFactor = gameObject.GetComponent<Soldier>().moveSpeed;
+            else GetComponent<Soldier>().MoveSpeedFactor = 0;
         }
 
         if(Input.GetKeyDown("r")){

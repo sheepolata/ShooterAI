@@ -41,7 +41,7 @@ public class UIHandler : MonoBehaviour
                 ShootCD.fillAmount = shootScript.TimerToShoot / shootScript.TimerToShootMax;
             }
 
-            if (shootScript.CanShootReload) {
+            if (!shootScript.IsReloading) {
                 ReloadTxt.text = string.Format("{0:d3}/{1:d3}", shootScript.CurrentClipSize, shootScript.maxClipSize);
                 ReloadCD.fillAmount = 0;
                 reload_settozero = true;

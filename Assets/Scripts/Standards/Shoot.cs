@@ -33,14 +33,17 @@ public class Shoot : MonoBehaviour
     int currentClipSize;
 
     public bool CanShoot{
-        get { return canShoot;}
+        get { return canShoot && !isReloading;}
+    }
+    public bool IsShooting{
+        get { return !canShoot;}
     }
     bool canShoot = true;
 
-    public bool CanShootReload{
-        get { return canShootReload;}
+    public bool IsReloading{
+        get { return isReloading;}
     }
-    bool canShootReload = true;
+    bool isReloading = false;
 
     public float TimerToShoot{
         get { return timerToShoot;}
@@ -56,11 +59,11 @@ public class Shoot : MonoBehaviour
     }
 
     void Update(){
-        if(Input.GetButton("Fire1") && (canShoot && canShootReload) && (GetComponent<PlayerControl>() != null && GetComponent<PlayerControl>().enabled)) {
-            timerToShoot = TimerToShootMax;
+        if(Input.GetButton("Fire1") && CanShoot && (GetComponent<PlayerControl>() != null && GetComponent<PlayerControl>().enabled)) {
+            // timerToShoot = TimerToShootMax;
             // StartCoroutine(TakeShot());
-            StartCoroutine(TakeShotRayCast());
-            canShoot = false;
+            // canShoot = false;
+            shoot();
         }
 
         if(!canShoot){
@@ -70,18 +73,36 @@ public class Shoot : MonoBehaviour
             }
         }
 
-        if(!canShootReload){
+        if(isReloading){
             timerToReload -= Time.deltaTime;
             if (timerToReload <= 0){
-                canShootReload = true;
+                isReloading = false;
                 currentClipSize = maxClipSize;
             }
         }
     }
 
+    public void shoot(){
+        timerToShoot = TimerToShootMax;
+        canShoot = false;
+        StartCoroutine(TakeShotRayCast());
+    }
+
     public void Reload(){
-        canShootReload = false;
+        isReloading = true;
         timerToReload = reloadTime;
+    }
+
+    public bool IsMagazineEmpty(){
+        return CurrentClipSize <= 0;
+    }
+
+    public bool IsMagazineCritical(){
+        return CurrentClipSize <= maxClipSize * 0.2f;
+    }
+
+    public bool IsMagazineFull(){
+        return CurrentClipSize >= maxClipSize;
     }
 
     IEnumerator TakeShotRayCast(){
@@ -101,11 +122,16 @@ public class Shoot : MonoBehaviour
         }
 
         GameObject _nozzleflashVFX = Instantiate(nozzleflashVFX, firePoint.position, firePoint.rotation);
-        float _dispersion = dispersion * (GetComponent<Soldier>().IsMoving ? 1f : 0.25f);
+        
+        // float _dispersion = dispersion * (GetComponent<Soldier>().IsMoving ? 1f : 0.25f);
+        float _dispersion = dispersion * ( (GetComponent<Soldier>().MoveSpeedFactor * .75f) + .25f );
+        
         _nozzleflashVFX.transform.Rotate(0, 0, Random.Range(-_dispersion, _dispersion));
 
-        float _range_dispersion = rangeDispersion * (GetComponent<Soldier>().IsMoving ? 1f : 0.25f);
+        // float _range_dispersion = rangeDispersion * (GetComponent<Soldier>().IsMoving ? 1f : 0.25f);
+        float _range_dispersion = rangeDispersion * ( (GetComponent<Soldier>().MoveSpeedFactor * .75f) + .25f );
         float _range = maxRange + Random.Range(-_range_dispersion, 0);
+        
         RaycastHit2D hit = Physics2D.Raycast(_nozzleflashVFX.transform.position, _nozzleflashVFX.transform.up, _range);
         Vector3 scale = new Vector3(0.02f,0.02f,0.02f);
         if (hit.collider != null){

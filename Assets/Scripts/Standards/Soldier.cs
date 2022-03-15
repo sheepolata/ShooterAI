@@ -13,6 +13,12 @@ public class Soldier : MonoBehaviour
         set { moving = value;}
     }
     bool moving = false;
+
+    public float MoveSpeedFactor {
+        get {return moveSpeedFactor;}
+        set {moveSpeedFactor = value/moveSpeed;}
+    }
+    float moveSpeedFactor = 1f;
     
 
     // Update is called once per frame

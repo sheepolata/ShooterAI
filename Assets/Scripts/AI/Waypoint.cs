@@ -44,6 +44,7 @@ public class Waypoint : MonoBehaviour
     }
 
     public Transform NextWaypointRandom() {
-        return Random.value < 0.2f ? previous[Random.Range(0, previous.Count)] : next[Random.Range(0, next.Count)];
+        return Random.value < 0.1f ? previous[Random.Range(0, previous.Count)] : next[Random.Range(0, next.Count)];
+        // return next[Random.Range(0, next.Count)];
     }
 }
