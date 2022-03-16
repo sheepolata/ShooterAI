@@ -191,10 +191,11 @@ GameObject:
   - component: {fileID: 5790165975280232892}
   - component: {fileID: 5790165975280232895}
   - component: {fileID: 8166440016652879797}
+  - component: {fileID: 7750283045439797539}
   - component: {fileID: 5790165975280232893}
   m_Layer: 0
   m_Name: Target
-  m_TagString: Target
+  m_TagString: TargetPractice
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -295,6 +296,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHP: 10
   regenHP: 0.1
+  regenTimer: 2
+  criticalTreshold: 0.2
+--- !u!114 &7750283045439797539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5790165975280232881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e26edf6aee442cc429078c04f899b8a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team: 2
 --- !u!114 &5790165975280232893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,3 +325,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
   resetTimerMax: 4
+  deadTimer: 10

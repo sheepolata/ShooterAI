@@ -18,7 +18,11 @@ public class TargetManager : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag == "Target" && !targetList.Contains(other.gameObject) && !other.gameObject.GetComponent<Target>().IsDead){
+
+        if(other.tag == "TargetPractice" && !targetList.Contains(other.gameObject) && !other.gameObject.GetComponent<Target>().IsDead){
+            
+            // if(other.gameObject.GetComponent<Team>().team == owner.GetComponent<Team>().team) return;
+            
             RaycastHit2D[] hits = Physics2D.RaycastAll(owner.transform.position, (other.gameObject.transform.position - owner.transform.position).normalized);
             // targetList.Add(other.gameObject);
             if(other.gameObject == hits[1].collider.gameObject) targetList.Add(other.gameObject);
@@ -27,7 +31,10 @@ public class TargetManager : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if(other.tag == "Target"){
+        if(other.tag == "TargetPractice"){
+            
+            if(other.gameObject.GetComponent<Team>().team == owner.GetComponent<Team>().team) return;
+            
             RaycastHit2D[] hits = Physics2D.RaycastAll(owner.transform.position, (other.gameObject.transform.position - owner.transform.position).normalized);
 
             if(other.gameObject == hits[1].collider.gameObject && !targetList.Contains(other.gameObject) && !other.gameObject.GetComponent<Target>().IsDead){ 
@@ -35,13 +42,17 @@ public class TargetManager : MonoBehaviour
             }
             else if((other.gameObject != hits[1].collider.gameObject && targetList.Contains(other.gameObject)) || other.gameObject.GetComponent<Target>().IsDead) { 
                 targetList.Remove(other.gameObject);
+                Debug.Log(hits[1].collider.gameObject);
             }
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if(other.tag == "Target" && targetList.Contains(other.gameObject)){
+
+        if(other.tag == "TargetPractice" && targetList.Contains(other.gameObject)){
+            // if(other.gameObject.GetComponent<Team>().team == owner.GetComponent<Team>().team) return;
+    
             targetList.Remove(other.gameObject);
         }
     }

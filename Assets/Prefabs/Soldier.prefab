@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1719222633705007943}
   - component: {fileID: 6502354317822690294}
   - component: {fileID: 6855510079226010557}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: TargetManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,6 +61,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   owner: {fileID: 5425864383860657781}
+  targetList: []
 --- !u!1 &5425864382752221460
 GameObject:
   m_ObjectHideFlags: 0
@@ -104,12 +105,13 @@ GameObject:
   - component: {fileID: 5425864383860657779}
   - component: {fileID: 5425864383860657780}
   - component: {fileID: 5425864383860657778}
+  - component: {fileID: 6369373093869200429}
   - component: {fileID: 5425864383860657782}
   - component: {fileID: 5425864383860657783}
   - component: {fileID: 5425864383860657776}
   m_Layer: 0
   m_Name: Soldier
-  m_TagString: Target
+  m_TagString: Targetable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -144,8 +146,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WaypointManager: {fileID: 0}
   currentWaypoint: {fileID: 0}
-  rotationSpeed: 0
-  targetManager: {fileID: 2004654005336638506}
+  rotationSpeed: 8
+  targetManagerGO: {fileID: 2004654005336638506}
 --- !u!114 &5425864383860657779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,7 +164,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 5096540782210806754, guid: bbe4f547611fd5b42a207b8a44958e65, type: 3}
   impactVFX: {fileID: 2901030014131932536, guid: 6955b5f806dcc1348a68ea2dc0fb1b8c, type: 3}
   nozzleflashVFX: {fileID: 8478484181391036640, guid: fd24b4b378ec79c4d919eaab8a91f592, type: 3}
-  rayVFX: {fileID: 0}
+  rayVFX: {fileID: 4996361766419522981, guid: 56938e72b2a97124d99c68d07c8a6afc, type: 3}
   bulletForce: 15
   bulletDamage: 1
   dispersion: 5
@@ -200,6 +202,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
+--- !u!114 &6369373093869200429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5425864383860657781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e26edf6aee442cc429078c04f899b8a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team: 0
 --- !u!212 &5425864383860657782
 SpriteRenderer:
   m_ObjectHideFlags: 0
