@@ -42,7 +42,6 @@ public class TargetManager : MonoBehaviour
             }
             else if((other.gameObject != hits[1].collider.gameObject && targetList.Contains(other.gameObject)) || other.gameObject.GetComponent<Target>().IsDead) { 
                 targetList.Remove(other.gameObject);
-                Debug.Log(hits[1].collider.gameObject);
             }
         }
     }

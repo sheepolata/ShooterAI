@@ -1257,6 +1257,7 @@ MonoBehaviour:
   camTarget: {fileID: 1986204688}
   offsetCamOnLookDir: 1
   camOffset: 6
+  Entities: {fileID: 1210454877}
 --- !u!114 &803634891
 MonoBehaviour:
   m_ObjectHideFlags: 0
