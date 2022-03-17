@@ -104,7 +104,7 @@ public class GameHandler : MonoBehaviour
 
         for(int i = 0; i < Entities.transform.childCount; i++){
             GameObject child = Entities.transform.GetChild(i).gameObject;
-            if(child.GetComponent<Soldier>() != null){
+            if(child.activeInHierarchy && child.GetComponent<Soldier>() != null){
                 viewableEntities.Add(child);
             }
         }
