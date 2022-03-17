@@ -22,11 +22,12 @@ public class Soldier : MonoBehaviour
     
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
     }
 
     void FixedUpdate() {
+        // GetComponent<CircleCollider2D>().enabled = GetComponent<PlayerControl>().enabled;
+        // GetComponent<CircleCollider2D>().isTrigger = !GetComponent<PlayerControl>().enabled;
     }
 
     public Rigidbody2D getRigidBody2D() {

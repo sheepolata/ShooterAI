@@ -11,7 +11,7 @@ public class AIController : MonoBehaviour
 
     public float rotationSpeed = 8.0f;
 
-    Vector2 movement;
+    Vector2 movement = Vector2.zero;
 
     public GameObject targetManagerGO;
     TargetManager targetManager;
@@ -19,6 +19,9 @@ public class AIController : MonoBehaviour
     GameObject currentTarget;
     Rigidbody2D rb;
     Soldier soldierScript;
+
+    public GameObject avoidanceManager;
+    CollisionAvoidanceAura collisionAvoidanceAura;
 
     float localMoveSpeed;
     float localRotationSpeed;
@@ -32,6 +35,8 @@ public class AIController : MonoBehaviour
         rb = soldierScript.getRigidBody2D();
         localMoveSpeed = soldierScript.moveSpeed;
         localRotationSpeed = rotationSpeed;
+
+        collisionAvoidanceAura = avoidanceManager.GetComponent<CollisionAvoidanceAura>();
     }
 
     // Update is called once per frame
@@ -40,7 +45,17 @@ public class AIController : MonoBehaviour
         chooseNextWaypoint();
 
         Vector3 movementV3 = currentWaypoint.transform.position - transform.position;
-        movement = new Vector2(movementV3.x, movementV3.y); movement.Normalize();
+        movementV3.Normalize();
+        
+        foreach(GameObject avoid in collisionAvoidanceAura.avoidThese){
+            Vector3 tmp = (transform.position - avoid.transform.position);
+            tmp.Normalize();
+            movementV3 += tmp * 1f;
+        }
+        
+        Vector2 newMovement = new Vector2(movementV3.x, movementV3.y); newMovement.Normalize();
+        movement = Vector2.Lerp(movement, newMovement, 5f * Time.deltaTime);
+
         soldierScript.IsMoving = !(movement.x == 0 && movement.y == 0);
         soldierScript.MoveSpeedFactor = localMoveSpeed;
 
@@ -93,12 +108,20 @@ public class AIController : MonoBehaviour
     }
 
     void chooseNextWaypoint(){
-        if ( Vector3.Distance(transform.position, currentWaypoint.transform.position) < 0.1f ){
+        if ( Vector3.Distance(transform.position, currentWaypoint.transform.position) < 0.3f ){
             currentWaypoint = currentWaypoint.GetComponent<Waypoint>().NextWaypointRandom().gameObject;
         }
     }
 
     GameObject pickTarget(){
         return targetManager.getFirstTarget();
+    }
+
+    void OnDrawGizmos() {
+        if(Application.isPlaying){
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(rb.position, rb.position + movement);
+            Gizmos.color = Color.white;
+        }
     }
 }
