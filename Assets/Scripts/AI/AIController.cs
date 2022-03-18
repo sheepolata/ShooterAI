@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 public class AIController : MonoBehaviour
 {
 
+    public GameObject squad;
+    Squad squadScript;
+
     public GameObject WaypointManager;
     public GameObject currentWaypoint;
 
@@ -37,15 +40,19 @@ public class AIController : MonoBehaviour
         localRotationSpeed = rotationSpeed;
 
         collisionAvoidanceAura = avoidanceManager.GetComponent<CollisionAvoidanceAura>();
+        squadScript = squad.GetComponent<Squad>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        chooseNextWaypoint();
+        updateWaypoint();
+        Vector3 movementV3 = Vector3.zero;
 
-        Vector3 movementV3 = currentWaypoint.transform.position - transform.position;
-        movementV3.Normalize();
+        if(currentWaypoint != null) {
+            movementV3 = currentWaypoint.transform.position - transform.position;
+            movementV3.Normalize();
+        }
         
         foreach(GameObject avoid in collisionAvoidanceAura.avoidThese){
             Vector3 tmp = (transform.position - avoid.transform.position);
@@ -53,7 +60,14 @@ public class AIController : MonoBehaviour
             movementV3 += tmp * 1f;
         }
         
-        Vector2 newMovement = new Vector2(movementV3.x, movementV3.y); newMovement.Normalize();
+        Vector2 newMovement = new Vector2(movementV3.x, movementV3.y); 
+
+        foreach(Vector2 avoid in collisionAvoidanceAura.avoidVectors){
+            newMovement += avoid * .5f;
+        }
+
+        newMovement.Normalize();
+
         movement = Vector2.Lerp(movement, newMovement, 5f * Time.deltaTime);
 
         soldierScript.IsMoving = !(movement.x == 0 && movement.y == 0);
@@ -107,11 +121,19 @@ public class AIController : MonoBehaviour
         rb.MovePosition(rb.position + movement * localMoveSpeed * Time.fixedDeltaTime);
     }
 
-    void chooseNextWaypoint(){
-        if ( Vector3.Distance(transform.position, currentWaypoint.transform.position) < 0.3f ){
-            currentWaypoint = currentWaypoint.GetComponent<Waypoint>().NextWaypointRandom().gameObject;
+    void updateWaypoint() {
+        currentWaypoint = squadScript.currentWaypoint;
+        float dist = Vector2.Distance(currentWaypoint.transform.position, transform.position);
+        if (dist < squadScript.waypointValidationThreshold){
+            currentWaypoint = null;
         }
     }
+
+    // void chooseNextWaypoint(){
+    //     if ( Vector3.Distance(transform.position, currentWaypoint.transform.position) < 0.3f ){
+    //         currentWaypoint = currentWaypoint.GetComponent<Waypoint>().NextWaypointRandom().gameObject;
+    //     }
+    // }
 
     GameObject pickTarget(){
         return targetManager.getFirstTarget();

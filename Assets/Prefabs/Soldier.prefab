@@ -44,7 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46627430b13285247ab4db290a3cc0cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  owner: {fileID: 5425864383860657781}
   avoidThese: []
+  avoidVectors: []
 --- !u!58 &4602182029301914072
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -206,6 +208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da86f59e2ce28c242a7a63f7a655f89c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  squad: {fileID: 0}
   WaypointManager: {fileID: 0}
   currentWaypoint: {fileID: 0}
   rotationSpeed: 8
@@ -231,11 +234,11 @@ MonoBehaviour:
   bulletForce: 15
   bulletDamage: 1
   dispersion: 5
-  timeBetweenBullets: 0.05
-  numberOfBullets: 7
+  timeBetweenBullets: 0.15
+  numberOfBullets: 3
   timeBetweenShots: 0.5
-  maxClipSize: 28
-  reloadTime: 1.8
+  maxClipSize: 31
+  reloadTime: 2.1
   maxRange: 6
   rangeDispersion: 1
 --- !u!114 &5425864383860657780

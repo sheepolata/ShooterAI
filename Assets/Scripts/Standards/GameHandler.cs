@@ -16,6 +16,7 @@ public class GameHandler : MonoBehaviour
 
     // Camera change
     public GameObject Entities;
+    public GameObject Squads;
     List<GameObject> viewableEntities = new List<GameObject>();
     bool camTargetChanged = false;
     float camTransitionDistance = 0f;
@@ -34,14 +35,22 @@ public class GameHandler : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
+        Soldier soldierScript = camTarget.GetComponent<Soldier>();
+
         // ############# UPDATE CAMERA #############
-        // Center camera on target
-        Vector2 campos = camTarget.GetComponent<Soldier>().getPosition();
-        
-        // Offset camera according to look direction
-        if(offsetCamOnLookDir){
-            Vector2 offset = new Vector2(Mathf.Cos((camTarget.GetComponent<Soldier>().getLookDir()+90f) * Mathf.Deg2Rad), Mathf.Sin((camTarget.GetComponent<Soldier>().getLookDir()+90f) * Mathf.Deg2Rad));
-            campos += offset * new Vector2(0.1f, 0.2f) * camOffset;
+        Vector2 campos = Vector2.zero;
+        if(soldierScript != null){
+            // Center camera on target
+            campos = soldierScript.getPosition();
+            
+            // Offset camera according to look direction
+            if(offsetCamOnLookDir){
+                Vector2 offset = new Vector2(Mathf.Cos((soldierScript.getLookDir()+90f) * Mathf.Deg2Rad), Mathf.Sin((soldierScript.getLookDir()+90f) * Mathf.Deg2Rad));
+                campos += offset * new Vector2(0.1f, 0.2f) * camOffset;
+            }
+        }
+        else{
+            campos = new Vector2(camTarget.transform.position.x, camTarget.transform.position.y);
         }
         Vector3 newCamPos = new Vector3(campos.x, campos.y, -10);
 
@@ -77,7 +86,7 @@ public class GameHandler : MonoBehaviour
         }
 
         // Handle change of camera target
-        if(Input.GetKeyDown(KeyCode.Tab)) {
+        if(Input.GetKeyDown(KeyCode.Tab) && viewableEntities.Count > 1) {
             PauseGame();
             int camTargetIndex = viewableEntities.IndexOf(camTarget);
             int newTargetIndex = (camTargetIndex + 1)%viewableEntities.Count;
@@ -86,11 +95,17 @@ public class GameHandler : MonoBehaviour
             GetComponent<UIHandler>().camTarget = camTarget;
             camTargetChanged = true;
 
-            Vector2 futureCamPos = camTarget.GetComponent<Soldier>().getPosition();
-            // Offset camera according to look direction
-            if(offsetCamOnLookDir){
-                Vector2 offset = new Vector2(Mathf.Cos((camTarget.GetComponent<Soldier>().getLookDir()+90f) * Mathf.Deg2Rad), Mathf.Sin((camTarget.GetComponent<Soldier>().getLookDir()+90f) * Mathf.Deg2Rad));
-                futureCamPos += offset * new Vector2(0.1f, 0.2f) * camOffset;
+            Vector2 futureCamPos = Vector2.zero;
+            if(soldierScript != null){
+                futureCamPos = soldierScript.getPosition();
+                // Offset camera according to look direction
+                if(offsetCamOnLookDir){
+                    Vector2 offset = new Vector2(Mathf.Cos((soldierScript.getLookDir()+90f) * Mathf.Deg2Rad), Mathf.Sin((soldierScript.getLookDir()+90f) * Mathf.Deg2Rad));
+                    futureCamPos += offset * new Vector2(0.1f, 0.2f) * camOffset;
+                }
+            } 
+            else {
+                futureCamPos = new Vector2(camTarget.transform.position.x, camTarget.transform.position.y);
             }
             Vector3 futureCamPos3 = new Vector3(futureCamPos.x, futureCamPos.y, -10);
             camTransitionDistance = Vector3.Distance(cam.transform.position, futureCamPos3);
@@ -102,9 +117,15 @@ public class GameHandler : MonoBehaviour
     void FixedUpdate() {
         viewableEntities.Clear();
 
-        for(int i = 0; i < Entities.transform.childCount; i++){
-            GameObject child = Entities.transform.GetChild(i).gameObject;
-            if(child.activeInHierarchy && child.GetComponent<Soldier>() != null){
+        // for(int i = 0; i < Entities.transform.childCount; i++){
+        //     GameObject child = Entities.transform.GetChild(i).gameObject;
+        //     if(child.activeInHierarchy && child.GetComponent<Soldier>() != null){
+        //         viewableEntities.Add(child);
+        //     }
+        // }
+        for(int i = 0; i < Squads.transform.childCount; i++){
+            GameObject child = Squads.transform.GetChild(i).gameObject;
+            if(child.activeInHierarchy){
                 viewableEntities.Add(child);
             }
         }

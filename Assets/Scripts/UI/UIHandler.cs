@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class UIHandler : MonoBehaviour
 {
     public GameObject camTarget;
+    public GameObject SoldierFocusUI;
     public Text ShootCDTxt;
     public Image ShootCD;
     public Text ReloadTxt;
@@ -25,6 +26,7 @@ public class UIHandler : MonoBehaviour
     {
         // ############# UPDATE UI #############
         if(camTarget.GetComponent<Shoot>() != null) {
+            SoldierFocusUI.SetActive(true);
             Shoot shootScript = camTarget.GetComponent<Shoot>();
             if (shootScript.CanShoot) {
                 ShootCDTxt.text = "Shoot";
@@ -57,6 +59,9 @@ public class UIHandler : MonoBehaviour
                 ReloadTxt.text = string.Format("Reloading");
                 ReloadCD.fillAmount = shootScript.TimerToReload / shootScript.reloadTime;
             }
+        }
+        else {
+            SoldierFocusUI.SetActive(false);
         }
 
     }
