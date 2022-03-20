@@ -21,20 +21,24 @@ public class Squad : MonoBehaviour
     // }
 
     void Update() {
-        transform.position = new Vector3(
-                                squadmates.Average(x=>x.transform.position.x),
-                                squadmates.Average(x=>x.transform.position.y),
-                                squadmates.Average(x=>x.transform.position.z));
+        if(squadmates.Count > 0) {  
+            transform.position = new Vector3(
+                                    squadmates.Average(x=>x.transform.position.x),
+                                    squadmates.Average(x=>x.transform.position.y),
+                                    squadmates.Average(x=>x.transform.position.z));
+        }
     }
 
     void FixedUpdate() {
-        float[] ldist = new float[squadmates.Count];
-        for(int i = 0; i < squadmates.Count; ++i) {
-            ldist[i] = Vector3.Distance(squadmates[i].transform.position, currentWaypoint.transform.position);
-        }
+        if(squadmates.Count > 0) {
+            float[] ldist = new float[squadmates.Count];
+            for(int i = 0; i < squadmates.Count; ++i) {
+                ldist[i] = Vector3.Distance(squadmates[i].transform.position, currentWaypoint.transform.position);
+            }
 
-        if(ldist.All(x => x <= waypointValidationThreshold*2f)){
-            chooseNextWaypoint();
+            if(ldist.All(x => x <= waypointValidationThreshold*2f)){
+                chooseNextWaypoint();
+            }
         }
     }
 

@@ -152,6 +152,7 @@ public class Shoot : MonoBehaviour
 
         if (hit.collider != null){
             if (hit.collider.GetComponent<Target>() != null) {hit.collider.GetComponent<Target>().onShotTaken(bulletDamage);}
+            if (hit.collider.GetComponent<Soldier>() != null) {hit.collider.GetComponent<Soldier>().onShotTaken(bulletDamage);}
         }
 
         return 1;

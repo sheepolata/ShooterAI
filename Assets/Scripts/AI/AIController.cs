@@ -46,6 +46,8 @@ public class AIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+
         updateWaypoint();
         Vector3 movementV3 = Vector3.zero;
 
@@ -94,14 +96,15 @@ public class AIController : MonoBehaviour
             }
 
         }
-        else if (shootScript.IsShooting){
+        else if (shootScript.IsShooting && previousTarget != null){
             Vector3 _dir2target = previousTarget.transform.position - transform.position;
             
             float angle = Mathf.Atan2(_dir2target.y, _dir2target.x) * Mathf.Rad2Deg - 90f;
             rb.rotation = Mathf.LerpAngle(rb.rotation, angle, localRotationSpeed * Time.deltaTime);
         }
         else {
-            if(!shootScript.IsMagazineFull() && !shootScript.IsReloading){
+            // if(!shootScript.IsMagazineFull() && !shootScript.IsReloading){
+            if(shootScript.IsMagazineCritical() && !shootScript.IsReloading){
                 shootScript.Reload();
             }
 

@@ -23,4 +23,9 @@ public class WaypointManager : MonoBehaviour
         }
         isReady = true;
     }
+
+    IEnumerator UpdateDelaunay() {
+        // https://www.newcastle.edu.au/__data/assets/pdf_file/0017/22508/13_A-fast-algorithm-for-constructing-Delaunay-triangulations-in-the-plane.pdf
+        yield return new WaitForSecondsRealtime(1f);
+    }
 }
