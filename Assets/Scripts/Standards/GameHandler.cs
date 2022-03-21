@@ -35,47 +35,55 @@ public class GameHandler : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        Soldier soldierScript = camTarget.GetComponent<Soldier>();
+        Soldier soldierScript = null;
 
-        // ############# UPDATE CAMERA #############
-        Vector2 campos = Vector2.zero;
-        if(soldierScript != null){
-            // Center camera on target
-            campos = soldierScript.getPosition();
-            
-            // Offset camera according to look direction
-            if(offsetCamOnLookDir){
-                Vector2 offset = new Vector2(Mathf.Cos((soldierScript.getLookDir()+90f) * Mathf.Deg2Rad), Mathf.Sin((soldierScript.getLookDir()+90f) * Mathf.Deg2Rad));
-                campos += offset * new Vector2(0.1f, 0.2f) * camOffset;
+        if(camTarget == null) {
+            camTarget = viewableEntities[0];
+            ChangeCamTarget(soldierScript, true);
+        }
+
+        if(camTarget != null) {
+            soldierScript = camTarget.GetComponent<Soldier>();
+
+            // ############# UPDATE CAMERA #############
+            Vector2 campos = Vector2.zero;
+            if(soldierScript != null){
+                // Center camera on target
+                campos = soldierScript.getPosition();
+                
+                // Offset camera according to look direction
+                if(offsetCamOnLookDir){
+                    Vector2 offset = new Vector2(Mathf.Cos((soldierScript.getLookDir()+90f) * Mathf.Deg2Rad), Mathf.Sin((soldierScript.getLookDir()+90f) * Mathf.Deg2Rad));
+                    campos += offset * new Vector2(0.1f, 0.2f) * camOffset;
+                }
             }
-        }
-        else{
-            campos = new Vector2(camTarget.transform.position.x, camTarget.transform.position.y);
-        }
-        Vector3 newCamPos = new Vector3(campos.x, campos.y, -10);
+            else{
+                campos = new Vector2(camTarget.transform.position.x, camTarget.transform.position.y);
+            }
+            Vector3 newCamPos = new Vector3(campos.x, campos.y, -10);
 
-        if (camTargetChanged) {
-
-            float currentDistance = Vector3.Distance(cam.transform.position, newCamPos);
-            if(currentDistance > camTransitionDistance/2f) {
-                float factor = ((currentDistance/camTransitionDistance) - 0.5f) / (1.0f - 0.5f);
-                camTransitionSpeed = factor * 4.5f + 0.5f;
-                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, maxZoom*originalSize, Time.unscaledDeltaTime * camTransitionSpeed);
+            if (camTargetChanged) {
+                float currentDistance = Vector3.Distance(cam.transform.position, newCamPos);
+                if(currentDistance > camTransitionDistance/2f) {
+                    float factor = ((currentDistance/camTransitionDistance) - 0.5f) / (1.0f - 0.5f);
+                    camTransitionSpeed = factor * 4.5f + 0.5f;
+                    cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, maxZoom*originalSize, Time.unscaledDeltaTime * camTransitionSpeed);
+                }
+                else {
+                    float factor = ((currentDistance/camTransitionDistance) - 0.0f) / (0.5f - 0.0f);
+                    camTransitionSpeed = (1f-factor) * 4.5f + 0.5f;
+                    cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, zoomAtTransition, Time.unscaledDeltaTime * camTransitionSpeed);
+                }
+                
+                cam.transform.position = Vector3.Lerp(cam.transform.position, newCamPos, camTransitionSpeed * Time.unscaledDeltaTime);
+                if(Vector3.Distance(cam.transform.position, newCamPos) < 0.05f) {
+                    camTargetChanged = false;
+                    ResumeGame();
+                }
             }
             else {
-                float factor = ((currentDistance/camTransitionDistance) - 0.0f) / (0.5f - 0.0f);
-                camTransitionSpeed = (1f-factor) * 4.5f + 0.5f;
-                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, zoomAtTransition, Time.unscaledDeltaTime * camTransitionSpeed);
+                cam.transform.position = newCamPos;
             }
-            
-            cam.transform.position = Vector3.Lerp(cam.transform.position, newCamPos, camTransitionSpeed * Time.unscaledDeltaTime);
-            if(Vector3.Distance(cam.transform.position, newCamPos) < 0.05f) {
-                camTargetChanged = false;
-                ResumeGame();
-            }
-        }
-        else {
-            cam.transform.position = newCamPos;
         }
 
         // Handle zoom with mouse wheel
@@ -87,20 +95,25 @@ public class GameHandler : MonoBehaviour
 
         // Handle change of camera target
         if(Input.GetKeyDown(KeyCode.Tab) && viewableEntities.Count > 1) {
+            ChangeCamTarget(soldierScript);
+        }
+    }
+
+    private void ChangeCamTarget(Soldier ss, bool forcedTarget = false) {
             PauseGame();
             int camTargetIndex = viewableEntities.IndexOf(camTarget);
             int newTargetIndex = (camTargetIndex + 1)%viewableEntities.Count;
 
-            camTarget = viewableEntities[newTargetIndex];
+            if(!forcedTarget) camTarget = viewableEntities[newTargetIndex];
             GetComponent<UIHandler>().camTarget = camTarget;
             camTargetChanged = true;
 
             Vector2 futureCamPos = Vector2.zero;
-            if(soldierScript != null){
-                futureCamPos = soldierScript.getPosition();
+            if(ss != null){
+                futureCamPos = ss.getPosition();
                 // Offset camera according to look direction
                 if(offsetCamOnLookDir){
-                    Vector2 offset = new Vector2(Mathf.Cos((soldierScript.getLookDir()+90f) * Mathf.Deg2Rad), Mathf.Sin((soldierScript.getLookDir()+90f) * Mathf.Deg2Rad));
+                    Vector2 offset = new Vector2(Mathf.Cos((ss.getLookDir()+90f) * Mathf.Deg2Rad), Mathf.Sin((ss.getLookDir()+90f) * Mathf.Deg2Rad));
                     futureCamPos += offset * new Vector2(0.1f, 0.2f) * camOffset;
                 }
             } 
@@ -111,7 +124,6 @@ public class GameHandler : MonoBehaviour
             camTransitionDistance = Vector3.Distance(cam.transform.position, futureCamPos3);
 
             zoomAtTransition = cam.orthographicSize;
-        }
     }
 
     void FixedUpdate() {

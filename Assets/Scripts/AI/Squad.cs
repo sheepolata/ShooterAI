@@ -21,11 +21,14 @@ public class Squad : MonoBehaviour
     // }
 
     void Update() {
-        if(squadmates.Count > 0) {  
+        if(squadmates.Count > 0) { 
             transform.position = new Vector3(
                                     squadmates.Average(x=>x.transform.position.x),
                                     squadmates.Average(x=>x.transform.position.y),
                                     squadmates.Average(x=>x.transform.position.z));
+        }
+        else {
+            Destroy(gameObject);
         }
     }
 

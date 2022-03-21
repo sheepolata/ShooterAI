@@ -25,7 +25,7 @@ public class UIHandler : MonoBehaviour
     void Update()
     {
         // ############# UPDATE UI #############
-        if(camTarget.GetComponent<Shoot>() != null) {
+        if(camTarget != null && camTarget.GetComponent<Shoot>() != null) {
             SoldierFocusUI.SetActive(true);
             Shoot shootScript = camTarget.GetComponent<Shoot>();
             if (shootScript.CanShoot) {
