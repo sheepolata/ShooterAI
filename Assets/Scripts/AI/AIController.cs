@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class AIController : MonoBehaviour
 {
 
-    public GameObject squad;
+    GameObject squad;
     Squad squadScript;
 
     public GameObject WaypointManager;
@@ -40,6 +40,7 @@ public class AIController : MonoBehaviour
         localRotationSpeed = rotationSpeed;
 
         collisionAvoidanceAura = avoidanceManager.GetComponent<CollisionAvoidanceAura>();
+        squad = GetComponent<Soldier>().squad;
         squadScript = squad.GetComponent<Squad>();
     }
 
