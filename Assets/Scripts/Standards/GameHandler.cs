@@ -39,7 +39,7 @@ public class GameHandler : MonoBehaviour
 
         if(camTarget == null) {
             camTarget = viewableEntities[0];
-            ChangeCamTarget(soldierScript, true);
+            ChangeCamTarget(null, true);
         }
 
         if(camTarget != null) {
