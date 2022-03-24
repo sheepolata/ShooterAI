@@ -11,6 +11,8 @@ public class UIHandler : MonoBehaviour
     public Image ShootCD;
     public Text ReloadTxt;
     public Image ReloadCD;
+    public Text GameSpeedText;
+    public Text CamTargetText;
 
     bool shootcd_settozero = false;
     bool reload_settozero = false;
@@ -64,5 +66,13 @@ public class UIHandler : MonoBehaviour
             SoldierFocusUI.SetActive(false);
         }
 
+        GameSpeedText.text = string.Format("Game Speed : x{0:f1}", Time.timeScale);
+        
+        if(camTarget == null){
+            CamTargetText.text = "Free camera";
+        }
+        else {
+            CamTargetText.text = string.Format("{0}", camTarget.name);
+        }
     }
 }

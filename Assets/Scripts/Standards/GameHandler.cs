@@ -3,6 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using System.Linq;
+
+public enum CamFollowOptions {
+    SOLDIER,
+    SQUAD,
+    FREE
+}
+
 public class GameHandler : MonoBehaviour
 {
     // Camera stuff
@@ -32,6 +40,9 @@ public class GameHandler : MonoBehaviour
     bool paused = false;
     bool speedup = false;
 
+    CamFollowOptions camTargetType = CamFollowOptions.SQUAD;
+    public float freeCameraSpeed = 8f;
+
     // Start is called before the first frame update
     void Start() {
         originalSize = cam.orthographicSize;
@@ -41,18 +52,17 @@ public class GameHandler : MonoBehaviour
     void Update() {
         Soldier soldierScript = null;
 
-        if(camTarget == null) {
+        if(camTarget == null && camTargetType != CamFollowOptions.FREE) {
             UpdateViewableEntities();
             camTarget = viewableEntities[0];
-            ChangeCamTarget(null, true);
+            ChangeCamTarget(true);
         }
 
         if(camTarget != null) {
-            soldierScript = camTarget.GetComponent<Soldier>();
-
             // ############# UPDATE CAMERA #############
             Vector2 campos = Vector2.zero;
-            if(soldierScript != null){
+            if(camTargetType == CamFollowOptions.SOLDIER){
+                soldierScript = camTarget.GetComponent<Soldier>();
                 // Center camera on target
                 campos = soldierScript.getPosition();
                 
@@ -62,7 +72,7 @@ public class GameHandler : MonoBehaviour
                     campos += offset * new Vector2(0.1f, 0.2f) * camOffset;
                 }
             }
-            else{
+            else if (camTargetType == CamFollowOptions.SQUAD){
                 campos = new Vector2(camTarget.transform.position.x, camTarget.transform.position.y);
             }
             Vector3 newCamPos = new Vector3(campos.x, campos.y, -10);
@@ -90,6 +100,17 @@ public class GameHandler : MonoBehaviour
                 cam.transform.position = newCamPos;
             }
         }
+        else if(camTargetType == CamFollowOptions.FREE) {
+            Vector2 freeCamMovement = Vector2.zero;
+            freeCamMovement.x = Input.GetAxisRaw("Horizontal");
+            freeCamMovement.y = Input.GetAxisRaw("Vertical");
+            Debug.Log(freeCamMovement);
+            cam.transform.position = new Vector3(
+                                        cam.transform.position.x + (freeCamMovement.x * freeCameraSpeed * Time.unscaledDeltaTime),
+                                        cam.transform.position.y + (freeCamMovement.y * freeCameraSpeed * Time.unscaledDeltaTime),
+                                        cam.transform.position.z
+                                    );
+        }
 
         // Handle zoom with mouse wheel
         zoomFactor = Mathf.Clamp(zoomFactor - Input.mouseScrollDelta.y/10f, minZoom, maxZoom);
@@ -99,8 +120,8 @@ public class GameHandler : MonoBehaviour
         }
 
         // Handle change of camera target
-        if(Input.GetKeyDown(KeyCode.Tab) && viewableEntities.Count > 1) {
-            ChangeCamTarget(soldierScript);
+        if(Input.GetKeyDown(KeyCode.Tab) && camTargetType != CamFollowOptions.FREE && viewableEntities.Count > 1) {
+            ChangeCamTarget();
         }
         if(Input.GetKeyDown(KeyCode.Alpha1)) {
             PauseGame();
@@ -118,9 +139,20 @@ public class GameHandler : MonoBehaviour
             if(!paused) PauseGame();
             else ResumeGame();
         }
+
+        if(Input.GetKeyDown(KeyCode.F1)){
+            camTargetType = (CamFollowOptions)((int)(camTargetType+1)%((int)CamFollowOptions.GetValues(typeof(CamFollowOptions)).Cast<CamFollowOptions>().Max()+1));
+            ChangeCamTarget(true, true);
+        }
     }
 
-    private void ChangeCamTarget(Soldier ss, bool forcedTarget = false) {
+    private void ChangeCamTarget(bool forcedTarget = false, bool toNull = false) {
+            if(forcedTarget && toNull){
+                camTarget = null;
+                GetComponent<UIHandler>().camTarget = null;
+                return;
+            }
+
             PauseGame();
             int camTargetIndex = viewableEntities.IndexOf(camTarget);
             int newTargetIndex = (camTargetIndex + 1)%viewableEntities.Count;
@@ -130,7 +162,8 @@ public class GameHandler : MonoBehaviour
             camTargetChanged = true;
 
             Vector2 futureCamPos = Vector2.zero;
-            if(ss != null){
+            if(camTargetType == CamFollowOptions.SOLDIER){
+                Soldier ss = camTarget.GetComponent<Soldier>();
                 futureCamPos = ss.getPosition();
                 // Offset camera according to look direction
                 if(offsetCamOnLookDir){
@@ -138,7 +171,7 @@ public class GameHandler : MonoBehaviour
                     futureCamPos += offset * new Vector2(0.1f, 0.2f) * camOffset;
                 }
             } 
-            else {
+            else if (camTargetType == CamFollowOptions.SQUAD){
                 futureCamPos = new Vector2(camTarget.transform.position.x, camTarget.transform.position.y);
             }
             Vector3 futureCamPos3 = new Vector3(futureCamPos.x, futureCamPos.y, -10);
@@ -152,18 +185,30 @@ public class GameHandler : MonoBehaviour
     }
 
     void UpdateViewableEntities(){
-        viewableEntities.Clear();
-
-        // for(int i = 0; i < Entities.transform.childCount; i++){
-        //     GameObject child = Entities.transform.GetChild(i).gameObject;
-        //     if(child.activeInHierarchy && child.GetComponent<Soldier>() != null){
-        //         viewableEntities.Add(child);
-        //     }
-        // }
-        for(int i = 0; i < Squads.transform.childCount; i++){
-            GameObject child = Squads.transform.GetChild(i).gameObject;
-            if(child.activeInHierarchy){
-                viewableEntities.Add(child);
+        switch(camTargetType){
+            case CamFollowOptions.SQUAD: {
+                viewableEntities.Clear();
+                for(int i = 0; i < Squads.transform.childCount; i++){
+                    GameObject child = Squads.transform.GetChild(i).gameObject;
+                    if(child.activeInHierarchy){
+                        viewableEntities.Add(child);
+                    }
+                }
+                break;
+            }
+            case CamFollowOptions.SOLDIER: {
+                viewableEntities.Clear();
+                for(int i = 0; i < Entities.transform.childCount; i++){
+                    GameObject child = Entities.transform.GetChild(i).gameObject;
+                    if(child.activeInHierarchy && child.GetComponent<Soldier>() != null){
+                        viewableEntities.Add(child);
+                    }
+                }
+                break;
+            }
+            case CamFollowOptions.FREE: {
+                viewableEntities.Clear();
+                break;
             }
         }
     }

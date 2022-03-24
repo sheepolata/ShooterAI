@@ -6,6 +6,7 @@ using System.Linq;
 
 public class Squad : MonoBehaviour
 {
+    public string squadName = "";
 
     public List<GameObject> squadmates = new List<GameObject>();
     [Min(0)]
