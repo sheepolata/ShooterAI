@@ -28,6 +28,10 @@ public class GameHandler : MonoBehaviour
     public float maxZoom = 3f;
     float zoomAtTransition = 0f;
 
+    bool slowed = false;
+    bool paused = false;
+    bool speedup = false;
+
     // Start is called before the first frame update
     void Start() {
         originalSize = cam.orthographicSize;
@@ -38,6 +42,7 @@ public class GameHandler : MonoBehaviour
         Soldier soldierScript = null;
 
         if(camTarget == null) {
+            UpdateViewableEntities();
             camTarget = viewableEntities[0];
             ChangeCamTarget(null, true);
         }
@@ -90,12 +95,28 @@ public class GameHandler : MonoBehaviour
         zoomFactor = Mathf.Clamp(zoomFactor - Input.mouseScrollDelta.y/10f, minZoom, maxZoom);
         float targetSize = originalSize * zoomFactor;
         if (targetSize != cam.orthographicSize) {
-            cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, targetSize, Time.deltaTime * zoomSpeed);
+            cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, targetSize, Time.unscaledDeltaTime * zoomSpeed);
         }
 
         // Handle change of camera target
         if(Input.GetKeyDown(KeyCode.Tab) && viewableEntities.Count > 1) {
             ChangeCamTarget(soldierScript);
+        }
+        if(Input.GetKeyDown(KeyCode.Alpha1)) {
+            PauseGame();
+        }
+        if(Input.GetKeyDown(KeyCode.Alpha2)) {
+            SlowMoGame();
+        }
+        if(Input.GetKeyDown(KeyCode.Alpha3)) {
+            NormalSpeedGame();
+        }
+        if(Input.GetKeyDown(KeyCode.Alpha4)) {
+            SpeedUpGame();
+        }
+        if(Input.GetKeyDown(KeyCode.Space)) {
+            if(!paused) PauseGame();
+            else ResumeGame();
         }
     }
 
@@ -127,6 +148,10 @@ public class GameHandler : MonoBehaviour
     }
 
     void FixedUpdate() {
+        UpdateViewableEntities();
+    }
+
+    void UpdateViewableEntities(){
         viewableEntities.Clear();
 
         // for(int i = 0; i < Entities.transform.childCount; i++){
@@ -145,13 +170,34 @@ public class GameHandler : MonoBehaviour
 
     public void PauseGame () {
         Time.timeScale = 0f;
+        paused = true;
     }
 
     public void SlowMoGame () {
-        Time.timeScale = .25f;
+        Time.timeScale = .5f;
+        slowed = true;
+        speedup = false;
+        paused = false;
+    }
+
+    public void NormalSpeedGame() {
+        Time.timeScale = 1f;
+        slowed = false;
+        speedup = false;
+        paused = false;
+    }
+
+    public void SpeedUpGame() {
+        Time.timeScale = 2f;
+        slowed = false;
+        speedup = true;
+        paused = false;
     }
 
     public void ResumeGame () {
-        Time.timeScale = 1f;
+        if(slowed) SlowMoGame();
+        else if (speedup) SpeedUpGame();
+        else NormalSpeedGame();
+        paused = false;
     }
 }
